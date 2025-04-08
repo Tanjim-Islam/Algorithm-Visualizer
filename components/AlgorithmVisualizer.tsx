@@ -1,19 +1,19 @@
-"use client"
-import { useState } from "react"
-import { Header } from "@/components/layout/Header"
-import { Footer } from "@/components/layout/Footer"
-import { SettingsPanel } from "@/components/features/settings/SettingsPanel"
-import { AlgorithmControls } from "@/components/sections/AlgorithmControls"
-import { VisualizationArea } from "@/components/sections/VisualizationArea"
-import { TutorialModal } from "@/components/features/tutorial/TutorialModal"
-import { useAlgorithmVisualizer } from "@/hooks/useAlgorithmVisualizer"
-import { PathfindingVisualizer } from "@/components/pathfinding/PathfindingVisualizer"
-import { GraphVisualizer } from "@/components/graph/GraphVisualizer"
-import { motion } from "framer-motion"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+"use client";
+import { useState } from "react";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import { SettingsPanel } from "@/components/features/settings/SettingsPanel";
+import { AlgorithmControls } from "@/components/sections/AlgorithmControls";
+import { VisualizationArea } from "@/components/sections/VisualizationArea";
+import { TutorialModal } from "@/components/features/tutorial/TutorialModal";
+import { useAlgorithmVisualizer } from "@/hooks/useAlgorithmVisualizer";
+import { PathfindingVisualizer } from "@/components/pathfinding/PathfindingVisualizer";
+import { GraphVisualizer } from "@/components/graph/GraphVisualizer";
+import { motion } from "framer-motion";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export function AlgorithmVisualizer() {
-  const [activeTab, setActiveTab] = useState<string>("sorting")
+  const [activeTab, setActiveTab] = useState<string>("sorting");
 
   const {
     array,
@@ -65,7 +65,7 @@ export function AlgorithmVisualizer() {
     handleDragStart,
     handleDragOver,
     handleDrop,
-  } = useAlgorithmVisualizer()
+  } = useAlgorithmVisualizer();
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 dark:from-[#222222] dark:to-[#222222] py-4 px-2 sm:py-8 sm:px-4 transition-colors">
@@ -84,23 +84,31 @@ export function AlgorithmVisualizer() {
         />
 
         <div className="mb-6">
-          <Tabs defaultValue="sorting" value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <Tabs
+            defaultValue="sorting"
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="w-full"
+          >
             <TabsList className="grid w-full grid-cols-3 dark:bg-[#333333]/50 bg-gray-100/80 rounded-lg sm:rounded-xl transition-colors mb-4">
               <TabsTrigger
                 value="sorting"
-                className="text-xs sm:text-sm rounded-lg sm:rounded-xl dark:data-[state=active]:bg-[#FF6F61] dark:data-[state=active]:text-white data-[state=active]:bg-blue-500 data-[state=active]:text-white transition-colors"
+                onClick={() => setActiveTab("sorting")}
+                className="text-xs sm:text-sm rounded-lg sm:rounded-xl dark:data-[state=active]:bg-[#FF6F61] dark:data-[state=active]:text-white data-[state=active]:bg-blue-500 data-[state=active]:text-white transition-all duration-150 hover:bg-gray-200 dark:hover:bg-[#444444] active:scale-98"
               >
                 Sorting Algorithms
               </TabsTrigger>
               <TabsTrigger
                 value="pathfinding"
-                className="text-xs sm:text-sm rounded-lg sm:rounded-xl dark:data-[state=active]:bg-[#FF6F61] dark:data-[state=active]:text-white data-[state=active]:bg-blue-500 data-[state=active]:text-white transition-colors"
+                onClick={() => setActiveTab("pathfinding")}
+                className="text-xs sm:text-sm rounded-lg sm:rounded-xl dark:data-[state=active]:bg-[#FF6F61] dark:data-[state=active]:text-white data-[state=active]:bg-blue-500 data-[state=active]:text-white transition-all duration-150 hover:bg-gray-200 dark:hover:bg-[#444444] active:scale-98"
               >
                 Pathfinding Algorithms
               </TabsTrigger>
               <TabsTrigger
                 value="graph"
-                className="text-xs sm:text-sm rounded-lg sm:rounded-xl dark:data-[state=active]:bg-[#FF6F61] dark:data-[state=active]:text-white data-[state=active]:bg-blue-500 data-[state=active]:text-white transition-colors"
+                onClick={() => setActiveTab("graph")}
+                className="text-xs sm:text-sm rounded-lg sm:rounded-xl dark:data-[state=active]:bg-[#FF6F61] dark:data-[state=active]:text-white data-[state=active]:bg-blue-500 data-[state=active]:text-white transition-all duration-150 hover:bg-gray-200 dark:hover:bg-[#444444] active:scale-98"
               >
                 Graph Algorithms
               </TabsTrigger>
@@ -123,60 +131,91 @@ export function AlgorithmVisualizer() {
           />
         )}
 
-        {activeTab === "sorting" ? (
-          <>
-            <AlgorithmControls
-              algorithm={algorithm}
-              setAlgorithm={setAlgorithm}
-              arraySize={arraySize}
-              setArraySize={setArraySize}
-              speed={speed}
-              setSpeed={setSpeed}
-              running={running}
-              showDetails={showDetails}
-              setShowDetails={setShowDetails}
-              generateArray={generateArray}
-              generateNearlySortedArray={generateNearlySortedArray}
-              generateReversedArray={generateReversedArray}
-              generateFewUniqueArray={generateFewUniqueArray}
-              array={array}
-              raceMode={raceMode}
-              startSorting={startSorting}
-              stopSorting={stopSorting}
-              startRace={startRace}
-              resetAll={resetAll}
-              resetRace={resetRace}
-              raceResults={raceResults}
-              currentStep={currentStep}
-              progress={progress}
-              comparisons={comparisons}
-              swaps={swaps}
-              executionTime={executionTime}
-              raceAlgorithms={raceAlgorithms}
-            />
+        <div className="relative">
+          {activeTab === "sorting" && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.15, ease: "easeOut" }}
+              key="sorting"
+              className="w-full"
+            >
+              <AlgorithmControls
+                algorithm={algorithm}
+                setAlgorithm={setAlgorithm}
+                arraySize={arraySize}
+                setArraySize={setArraySize}
+                speed={speed}
+                setSpeed={setSpeed}
+                running={running}
+                showDetails={showDetails}
+                setShowDetails={setShowDetails}
+                generateArray={generateArray}
+                generateNearlySortedArray={generateNearlySortedArray}
+                generateReversedArray={generateReversedArray}
+                generateFewUniqueArray={generateFewUniqueArray}
+                array={array}
+                raceMode={raceMode}
+                startSorting={startSorting}
+                stopSorting={stopSorting}
+                startRace={startRace}
+                resetAll={resetAll}
+                resetRace={resetRace}
+                raceResults={raceResults}
+                currentStep={currentStep}
+                progress={progress}
+                comparisons={comparisons}
+                swaps={swaps}
+                executionTime={executionTime}
+                raceAlgorithms={raceAlgorithms}
+              />
 
-            <VisualizationArea
-              array={array}
-              visualizationMode={visualizationMode}
-              is3D={is3D}
-              activeIndices={activeIndices}
-              barStyle={barStyle}
-              accessPattern={accessPattern}
-              running={running}
-              handleDragStart={handleDragStart}
-              handleDragOver={handleDragOver}
-              handleDrop={handleDrop}
-              dragOverIndex={dragOverIndex}
-              algorithm={algorithm}
-              raceMode={raceMode}
-              raceAlgorithms={raceAlgorithms}
-            />
-          </>
-        ) : activeTab === "pathfinding" ? (
-          <PathfindingVisualizer soundEnabled={soundEnabled} />
-        ) : (
-          <GraphVisualizer soundEnabled={soundEnabled} />
-        )}
+              <VisualizationArea
+                array={array}
+                visualizationMode={visualizationMode}
+                is3D={is3D}
+                activeIndices={activeIndices}
+                barStyle={barStyle}
+                accessPattern={accessPattern}
+                running={running}
+                handleDragStart={handleDragStart}
+                handleDragOver={handleDragOver}
+                handleDrop={handleDrop}
+                dragOverIndex={dragOverIndex}
+                algorithm={algorithm}
+                raceMode={raceMode}
+                raceAlgorithms={raceAlgorithms}
+              />
+            </motion.div>
+          )}
+
+          {activeTab === "pathfinding" && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.15, ease: "easeOut" }}
+              key="pathfinding"
+              className="w-full"
+            >
+              <PathfindingVisualizer soundEnabled={soundEnabled} />
+            </motion.div>
+          )}
+
+          {activeTab === "graph" && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.15, ease: "easeOut" }}
+              key="graph"
+              className="w-full"
+            >
+              <GraphVisualizer soundEnabled={soundEnabled} />
+            </motion.div>
+          )}
+        </div>
 
         <Footer />
 
@@ -189,5 +228,5 @@ export function AlgorithmVisualizer() {
         )}
       </motion.div>
     </div>
-  )
+  );
 }

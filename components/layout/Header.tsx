@@ -1,29 +1,55 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { BarChart3, Lightbulb, Volume2, VolumeX, Settings, Sun, Moon, Menu } from "lucide-react"
-import { motion } from "framer-motion"
-import { Sparkles } from "lucide-react"
-import { useTheme } from "next-themes"
-import { useState } from "react"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
+  BarChart3,
+  Lightbulb,
+  Volume2,
+  VolumeX,
+  Settings,
+  Sun,
+  Moon,
+  Menu,
+} from "lucide-react";
+import { motion } from "framer-motion";
+import { Sparkles } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useState, useEffect } from "react";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 interface HeaderProps {
-  showSettings: boolean
-  setShowSettings: (show: boolean) => void
-  soundEnabled: boolean
-  setSoundEnabled: (enabled: boolean) => void
-  setShowTutorial: (show: boolean) => void
+  showSettings: boolean;
+  setShowSettings: (show: boolean) => void;
+  soundEnabled: boolean;
+  setSoundEnabled: (enabled: boolean) => void;
+  setShowTutorial: (show: boolean) => void;
 }
 
-export function Header({ showSettings, setShowSettings, soundEnabled, setSoundEnabled, setShowTutorial }: HeaderProps) {
-  const { theme, setTheme } = useTheme()
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+export function Header({
+  showSettings,
+  setShowSettings,
+  soundEnabled,
+  setSoundEnabled,
+  setShowTutorial,
+}: HeaderProps) {
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Only show the UI after the component mounts to prevent hydration errors
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark")
-  }
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
 
   const HeaderControls = () => (
     <>
@@ -42,7 +68,11 @@ export function Header({ showSettings, setShowSettings, soundEnabled, setSoundEn
         onClick={() => setSoundEnabled(!soundEnabled)}
         className="rounded-xl dark:border-[#FF6F61] dark:text-[#FF6F61] border-blue-400 text-blue-500 transition-colors"
       >
-        {soundEnabled ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5" />}
+        {soundEnabled ? (
+          <Volume2 className="h-5 w-5" />
+        ) : (
+          <VolumeX className="h-5 w-5" />
+        )}
       </Button>
 
       <Button
@@ -60,10 +90,15 @@ export function Header({ showSettings, setShowSettings, soundEnabled, setSoundEn
         onClick={toggleTheme}
         className="rounded-xl dark:border-[#FF6F61] dark:text-[#FF6F61] border-blue-400 text-blue-500 transition-colors"
       >
-        {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+        {mounted &&
+          (theme === "dark" ? (
+            <Sun className="h-5 w-5" />
+          ) : (
+            <Moon className="h-5 w-5" />
+          ))}
       </Button>
     </>
-  )
+  );
 
   return (
     <div className="flex justify-between items-center mb-4 sm:mb-8 bg-white/80 dark:bg-[#2a2a2a]/80 backdrop-blur-sm p-3 sm:p-6 rounded-xl sm:rounded-2xl shadow-lg transition-colors">
@@ -79,7 +114,11 @@ export function Header({ showSettings, setShowSettings, soundEnabled, setSoundEn
         </span>
         <motion.span
           animate={{ rotate: [0, 5, 0, -5, 0] }}
-          transition={{ repeat: Number.POSITIVE_INFINITY, duration: 2, ease: "easeInOut" }}
+          transition={{
+            repeat: Number.POSITIVE_INFINITY,
+            duration: 2,
+            ease: "easeInOut",
+          }}
           className="animate-float hidden sm:inline-block"
         >
           <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 dark:text-[#DAA520] text-yellow-500 transition-colors" />
@@ -108,9 +147,14 @@ export function Header({ showSettings, setShowSettings, soundEnabled, setSoundEn
               <Menu className="h-5 w-5" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="right" className="w-[240px] sm:w-[385px] dark:bg-[#1C1C1C] bg-white">
+          <SheetContent
+            side="right"
+            className="w-[240px] sm:w-[385px] dark:bg-[#1C1C1C] bg-white"
+          >
             <div className="py-6">
-              <h2 className="text-lg font-semibold mb-6 dark:text-[#F5E8D8] text-gray-800">Controls</h2>
+              <h2 className="text-lg font-semibold mb-6 dark:text-[#F5E8D8] text-gray-800">
+                Controls
+              </h2>
               <div className="flex flex-col gap-4">
                 <div className="flex items-center gap-3">
                   <Lightbulb className="h-5 w-5 dark:text-[#FF6F61] text-blue-500" />
@@ -147,13 +191,25 @@ export function Header({ showSettings, setShowSettings, soundEnabled, setSoundEn
                   </Button>
                 </div>
                 <div className="flex items-center gap-3">
-                  {theme === "dark" ? (
-                    <Sun className="h-5 w-5 dark:text-[#FF6F61] text-blue-500" />
-                  ) : (
-                    <Moon className="h-5 w-5 dark:text-[#FF6F61] text-blue-500" />
+                  {mounted && (
+                    <>
+                      {theme === "dark" ? (
+                        <Sun className="h-5 w-5 dark:text-[#FF6F61] text-blue-500" />
+                      ) : (
+                        <Moon className="h-5 w-5 dark:text-[#FF6F61] text-blue-500" />
+                      )}
+                    </>
                   )}
-                  <Button variant="link" onClick={toggleTheme} className="p-0 h-auto dark:text-[#F5E8D8] text-gray-800">
-                    {theme === "dark" ? "Light Mode" : "Dark Mode"}
+                  <Button
+                    variant="link"
+                    onClick={toggleTheme}
+                    className="p-0 h-auto dark:text-[#F5E8D8] text-gray-800"
+                  >
+                    {mounted
+                      ? theme === "dark"
+                        ? "Light Mode"
+                        : "Dark Mode"
+                      : "Toggle Theme"}
                   </Button>
                 </div>
               </div>
@@ -162,5 +218,5 @@ export function Header({ showSettings, setShowSettings, soundEnabled, setSoundEn
         </Sheet>
       </div>
     </div>
-  )
+  );
 }
