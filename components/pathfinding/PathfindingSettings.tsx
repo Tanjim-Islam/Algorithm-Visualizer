@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
-import { Map, RotateCcw } from "lucide-react"
-import { CustomSlider } from "@/components/ui/custom-slider"
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Map, RotateCcw } from "lucide-react";
+import { CustomSlider } from "@/components/ui/custom-slider";
 
 interface PathfindingSettingsProps {
-  speed: number
-  setSpeed: (speed: number) => void
-  isRunning: boolean
-  generateMaze: () => void
-  clearPath: () => void
-  resetGrid: () => void
+  speed: number;
+  setSpeed: (speed: number) => void;
+  isRunning: boolean;
+  generateMaze: () => void;
+  clearPath: () => void;
+  resetGrid: () => void;
 }
 
 export function PathfindingSettings({
@@ -25,10 +25,10 @@ export function PathfindingSettings({
   // Format speed display
   const formatSpeed = (value: number) => {
     if (value < 1) {
-      return `${value.toFixed(1)}ms`
+      return `${value.toFixed(1)}ms`;
     }
-    return `${value}ms`
-  }
+    return `${value}ms`;
+  };
 
   return (
     <div className="space-y-3 sm:space-y-4">
@@ -38,9 +38,9 @@ export function PathfindingSettings({
         </Label>
         <CustomSlider
           value={[speed]}
-          min={10}
+          min={1}
           max={500}
-          step={10}
+          step={1}
           onValueChange={(value) => setSpeed(value[0])}
           disabled={isRunning}
           className="py-3 sm:py-4 relative"
@@ -48,7 +48,7 @@ export function PathfindingSettings({
           trackClassName="dark:bg-[#FF6F61]/50 bg-blue-500/50 dark:shadow-[0_0_8px_rgba(255,111,97,0.3)] shadow-[0_0_8px_rgba(59,130,246,0.3)] transition-colors"
         />
         <p className="text-xs sm:text-sm dark:text-[#F5E8D8]/70 text-gray-500 mt-1 transition-colors">
-          Higher value = slower animation
+          Lower value = faster animation (1ms = fastest)
         </p>
       </div>
 
@@ -85,5 +85,5 @@ export function PathfindingSettings({
         </Button>
       </div>
     </div>
-  )
+  );
 }

@@ -9,6 +9,7 @@ import { TutorialModal } from "@/components/features/tutorial/TutorialModal";
 import { useAlgorithmVisualizer } from "@/hooks/useAlgorithmVisualizer";
 import { PathfindingVisualizer } from "@/components/pathfinding/PathfindingVisualizer";
 import { GraphVisualizer } from "@/components/graph/GraphVisualizer";
+import { BacktrackingVisualizer } from "@/components/backtracking/BacktrackingVisualizer";
 import { motion } from "framer-motion";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -90,27 +91,30 @@ export function AlgorithmVisualizer() {
             onValueChange={setActiveTab}
             className="w-full"
           >
-            <TabsList className="grid w-full grid-cols-3 dark:bg-[#333333]/50 bg-gray-100/80 rounded-lg sm:rounded-xl transition-colors mb-4">
+            <TabsList className="grid w-full grid-cols-4 dark:bg-[#333333]/50 bg-gray-100/80 rounded-lg sm:rounded-xl transition-all duration-300 ease-in-out mb-4 relative overflow-hidden">
               <TabsTrigger
                 value="sorting"
-                onClick={() => setActiveTab("sorting")}
-                className="text-xs sm:text-sm rounded-lg sm:rounded-xl dark:data-[state=active]:bg-[#FF6F61] dark:data-[state=active]:text-white data-[state=active]:bg-blue-500 data-[state=active]:text-white transition-all duration-150 hover:bg-gray-200 dark:hover:bg-[#444444] active:scale-98"
+                className="text-xs sm:text-sm rounded-lg sm:rounded-xl dark:data-[state=active]:bg-[#FF6F61] dark:data-[state=active]:text-white data-[state=active]:bg-blue-500 data-[state=active]:text-white transition-all duration-300 ease-in-out transform hover:scale-105 focus:scale-105 active:scale-95 z-10"
               >
-                Sorting Algorithms
+                Sorting
               </TabsTrigger>
               <TabsTrigger
                 value="pathfinding"
-                onClick={() => setActiveTab("pathfinding")}
-                className="text-xs sm:text-sm rounded-lg sm:rounded-xl dark:data-[state=active]:bg-[#FF6F61] dark:data-[state=active]:text-white data-[state=active]:bg-blue-500 data-[state=active]:text-white transition-all duration-150 hover:bg-gray-200 dark:hover:bg-[#444444] active:scale-98"
+                className="text-xs sm:text-sm rounded-lg sm:rounded-xl dark:data-[state=active]:bg-[#FF6F61] dark:data-[state=active]:text-white data-[state=active]:bg-blue-500 data-[state=active]:text-white transition-all duration-300 ease-in-out transform hover:scale-105 focus:scale-105 active:scale-95 z-10"
               >
-                Pathfinding Algorithms
+                Pathfinding
               </TabsTrigger>
               <TabsTrigger
                 value="graph"
-                onClick={() => setActiveTab("graph")}
-                className="text-xs sm:text-sm rounded-lg sm:rounded-xl dark:data-[state=active]:bg-[#FF6F61] dark:data-[state=active]:text-white data-[state=active]:bg-blue-500 data-[state=active]:text-white transition-all duration-150 hover:bg-gray-200 dark:hover:bg-[#444444] active:scale-98"
+                className="text-xs sm:text-sm rounded-lg sm:rounded-xl dark:data-[state=active]:bg-[#FF6F61] dark:data-[state=active]:text-white data-[state=active]:bg-blue-500 data-[state=active]:text-white transition-all duration-300 ease-in-out transform hover:scale-105 focus:scale-105 active:scale-95 z-10"
               >
-                Graph Algorithms
+                Graph
+              </TabsTrigger>
+              <TabsTrigger
+                value="backtracking"
+                className="text-xs sm:text-sm rounded-lg sm:rounded-xl dark:data-[state=active]:bg-[#FF6F61] dark:data-[state=active]:text-white data-[state=active]:bg-blue-500 data-[state=active]:text-white transition-all duration-300 ease-in-out transform hover:scale-105 focus:scale-105 active:scale-95 z-10"
+              >
+                Backtracking
               </TabsTrigger>
             </TabsList>
           </Tabs>
@@ -131,91 +135,62 @@ export function AlgorithmVisualizer() {
           />
         )}
 
-        <div className="relative">
-          {activeTab === "sorting" && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.15, ease: "easeOut" }}
-              key="sorting"
-              className="w-full"
-            >
-              <AlgorithmControls
-                algorithm={algorithm}
-                setAlgorithm={setAlgorithm}
-                arraySize={arraySize}
-                setArraySize={setArraySize}
-                speed={speed}
-                setSpeed={setSpeed}
-                running={running}
-                showDetails={showDetails}
-                setShowDetails={setShowDetails}
-                generateArray={generateArray}
-                generateNearlySortedArray={generateNearlySortedArray}
-                generateReversedArray={generateReversedArray}
-                generateFewUniqueArray={generateFewUniqueArray}
-                array={array}
-                raceMode={raceMode}
-                startSorting={startSorting}
-                stopSorting={stopSorting}
-                startRace={startRace}
-                resetAll={resetAll}
-                resetRace={resetRace}
-                raceResults={raceResults}
-                currentStep={currentStep}
-                progress={progress}
-                comparisons={comparisons}
-                swaps={swaps}
-                executionTime={executionTime}
-                raceAlgorithms={raceAlgorithms}
-              />
+        {activeTab === "sorting" ? (
+          <>
+            <AlgorithmControls
+              algorithm={algorithm}
+              setAlgorithm={setAlgorithm}
+              arraySize={arraySize}
+              setArraySize={setArraySize}
+              speed={speed}
+              setSpeed={setSpeed}
+              running={running}
+              showDetails={showDetails}
+              setShowDetails={setShowDetails}
+              generateArray={generateArray}
+              generateNearlySortedArray={generateNearlySortedArray}
+              generateReversedArray={generateReversedArray}
+              generateFewUniqueArray={generateFewUniqueArray}
+              array={array}
+              raceMode={raceMode}
+              startSorting={startSorting}
+              stopSorting={stopSorting}
+              startRace={startRace}
+              resetAll={resetAll}
+              resetRace={resetRace}
+              raceResults={raceResults}
+              currentStep={currentStep}
+              progress={progress}
+              comparisons={comparisons}
+              swaps={swaps}
+              executionTime={executionTime}
+              raceAlgorithms={raceAlgorithms}
+            />
 
-              <VisualizationArea
-                array={array}
-                visualizationMode={visualizationMode}
-                is3D={is3D}
-                activeIndices={activeIndices}
-                barStyle={barStyle}
-                accessPattern={accessPattern}
-                running={running}
-                handleDragStart={handleDragStart}
-                handleDragOver={handleDragOver}
-                handleDrop={handleDrop}
-                dragOverIndex={dragOverIndex}
-                algorithm={algorithm}
-                raceMode={raceMode}
-                raceAlgorithms={raceAlgorithms}
-              />
-            </motion.div>
-          )}
-
-          {activeTab === "pathfinding" && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.15, ease: "easeOut" }}
-              key="pathfinding"
-              className="w-full"
-            >
-              <PathfindingVisualizer soundEnabled={soundEnabled} />
-            </motion.div>
-          )}
-
-          {activeTab === "graph" && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.15, ease: "easeOut" }}
-              key="graph"
-              className="w-full"
-            >
-              <GraphVisualizer soundEnabled={soundEnabled} />
-            </motion.div>
-          )}
-        </div>
+            <VisualizationArea
+              array={array}
+              visualizationMode={visualizationMode}
+              is3D={is3D}
+              activeIndices={activeIndices}
+              barStyle={barStyle}
+              accessPattern={accessPattern}
+              running={running}
+              handleDragStart={handleDragStart}
+              handleDragOver={handleDragOver}
+              handleDrop={handleDrop}
+              dragOverIndex={dragOverIndex}
+              algorithm={algorithm}
+              raceMode={raceMode}
+              raceAlgorithms={raceAlgorithms}
+            />
+          </>
+        ) : activeTab === "pathfinding" ? (
+          <PathfindingVisualizer soundEnabled={soundEnabled} />
+        ) : activeTab === "graph" ? (
+          <GraphVisualizer soundEnabled={soundEnabled} />
+        ) : (
+          <BacktrackingVisualizer soundEnabled={soundEnabled} />
+        )}
 
         <Footer />
 
