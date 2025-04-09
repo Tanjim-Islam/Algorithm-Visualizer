@@ -95,18 +95,22 @@ export function SudokuSolver({
     return true;
   }
 
+  // Calculate box size (3 for 9x9 sudoku, 2 for 4x4, etc.)
+  const boxSize = Math.sqrt(size);
+  const isValidBoxSize = Number.isInteger(boxSize);
+
   return (
-    <Card className="p-4 dark:bg-[#333333]/30 bg-gray-50/50 rounded-lg sm:rounded-xl transition-colors">
-      <div className="flex flex-col items-center">
+    <Card className="p-4 dark:bg-[#333333]/30 bg-gray-50/50 rounded-lg sm:rounded-xl transition-colors w-full">
+      <div className="flex flex-col items-center w-full">
         <h3 className="text-lg font-semibold mb-4 dark:text-[#F5E8D8] text-gray-800">
           Sudoku Solver
         </h3>
         <div
-          className="grid gap-0.5 sm:gap-1 mx-auto"
+          className="grid gap-[2px] sm:gap-[3px] mx-auto"
           style={{
-            width: "100%",
-            maxWidth: "500px",
             gridTemplateColumns: `repeat(${size}, minmax(0, 1fr))`,
+            width: "100%",
+            maxWidth: "700px",
           }}
         >
           {Array.from({ length: size }).map((_, row) =>

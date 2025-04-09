@@ -34,8 +34,8 @@ export function SubsetSum({
   const maxValue = Math.max(...numbers, 1);
 
   return (
-    <Card className="p-4 dark:bg-[#333333]/30 bg-gray-50/50 rounded-lg sm:rounded-xl transition-colors">
-      <div className="flex flex-col items-center">
+    <Card className="p-4 dark:bg-[#333333]/30 bg-gray-50/50 rounded-lg sm:rounded-xl transition-colors w-full">
+      <div className="flex flex-col items-center w-full">
         <h3 className="text-lg font-semibold mb-4 dark:text-[#F5E8D8] text-gray-800">
           Subset Sum Problem{" "}
           {maxSubsetSize ? `(Max Size: ${maxSubsetSize})` : ""}

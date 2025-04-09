@@ -262,11 +262,13 @@ export function BacktrackingVisualizer({
 
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mt-6">
               <div
-                className={`lg:col-span-${
-                  showRecursionTree ? "3" : "5"
-                } h-full`}
+                className={
+                  showRecursionTree
+                    ? "lg:col-span-3 w-full h-full"
+                    : "lg:col-span-5 w-full h-full"
+                }
               >
-                <TabsContent value="nqueens" className="mt-0">
+                <TabsContent value="nqueens" className="mt-0 h-full">
                   <NQueens
                     size={nQueensSize}
                     board={
@@ -284,7 +286,7 @@ export function BacktrackingVisualizer({
                     startingPosition={nQueensConfig.startingPosition}
                   />
                 </TabsContent>
-                <TabsContent value="sudoku" className="mt-0">
+                <TabsContent value="sudoku" className="mt-0 h-full">
                   <SudokuSolver
                     board={
                       activeSteps[currentStepIndex]?.state?.board || sudokuBoard
@@ -303,7 +305,7 @@ export function BacktrackingVisualizer({
                     size={sudokuSize}
                   />
                 </TabsContent>
-                <TabsContent value="maze" className="mt-0">
+                <TabsContent value="maze" className="mt-0 h-full">
                   <MazeSolver
                     maze={
                       activeSteps[currentStepIndex]?.state?.maze ||
@@ -324,7 +326,7 @@ export function BacktrackingVisualizer({
                     endPosition={mazeConfig.end}
                   />
                 </TabsContent>
-                <TabsContent value="knights" className="mt-0">
+                <TabsContent value="knights" className="mt-0 h-full">
                   <KnightsTour
                     size={knightsTourSize}
                     board={
@@ -346,7 +348,7 @@ export function BacktrackingVisualizer({
                     tourType={knightsTourType}
                   />
                 </TabsContent>
-                <TabsContent value="subset" className="mt-0">
+                <TabsContent value="subset" className="mt-0 h-full">
                   <SubsetSum
                     numbers={subsetSumConfig.numbers}
                     target={subsetSumConfig.target}

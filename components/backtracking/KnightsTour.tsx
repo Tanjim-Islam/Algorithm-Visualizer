@@ -74,8 +74,8 @@ export function KnightsTour({
   };
 
   return (
-    <Card className="p-4 dark:bg-[#333333]/30 bg-gray-50/50 rounded-lg sm:rounded-xl transition-colors">
-      <div className="flex flex-col items-center">
+    <Card className="p-4 dark:bg-[#333333]/30 bg-gray-50/50 rounded-lg sm:rounded-xl transition-colors w-full">
+      <div className="flex flex-col items-center w-full">
         <h3 className="text-lg font-semibold mb-4 dark:text-[#F5E8D8] text-gray-800">
           Knight's Tour ({size}x{size}) -{" "}
           {tourType === "closed" ? "Closed Tour" : "Open Tour"}
@@ -85,7 +85,7 @@ export function KnightsTour({
           style={{
             gridTemplateColumns: `repeat(${size}, minmax(0, 1fr))`,
             width: "100%",
-            maxWidth: "500px",
+            maxWidth: "700px",
           }}
         >
           {Array.from({ length: size }).map((_, row) =>

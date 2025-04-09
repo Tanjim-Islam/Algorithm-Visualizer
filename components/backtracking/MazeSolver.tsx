@@ -68,18 +68,21 @@ export function MazeSolver({
     return row === currentRow && col === currentCol;
   };
 
+  const isValidPosition = (row: number, col: number) =>
+    row >= 0 && row < maze.length && col >= 0 && col < maze[0].length;
+
   return (
-    <Card className="p-4 dark:bg-[#333333]/30 bg-gray-50/50 rounded-lg sm:rounded-xl transition-colors">
-      <div className="flex flex-col items-center">
+    <Card className="p-4 dark:bg-[#333333]/30 bg-gray-50/50 rounded-lg sm:rounded-xl transition-colors w-full">
+      <div className="flex flex-col items-center w-full">
         <h3 className="text-lg font-semibold mb-4 dark:text-[#F5E8D8] text-gray-800">
           Maze Solver
         </h3>
         <div
-          className="grid gap-1 mx-auto"
+          className="grid gap-1 sm:gap-2 mx-auto"
           style={{
             gridTemplateColumns: `repeat(${safeMaze[0].length}, minmax(0, 1fr))`,
             width: "100%",
-            maxWidth: "500px",
+            maxWidth: "700px",
           }}
         >
           {safeMaze.map((row, rowIndex) =>
