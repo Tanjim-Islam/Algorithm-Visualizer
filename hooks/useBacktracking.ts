@@ -59,7 +59,7 @@ export function useBacktracking(soundEnabled: boolean) {
   // Common settings
   const [findAllSolutions, setFindAllSolutions] = useState<boolean>(false);
   const [visualizationStyle, setVisualizationStyle] =
-    useState<VisualizationStyle>("default");
+    useState<VisualizationStyle>("chess");
 
   // N-Queens settings
   const [nQueensSize, setNQueensSize] = useState<number>(4);
