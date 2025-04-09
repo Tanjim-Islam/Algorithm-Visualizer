@@ -1,13 +1,34 @@
-"use client"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Network, Play, Pause, RotateCcw, Plus, Trash, HelpCircle, Eraser, ArrowRight } from "lucide-react"
-import { GraphControls } from "@/components/graph/GraphControls"
-import { GraphSettings } from "@/components/graph/GraphSettings"
-import { GraphCanvas } from "@/components/graph/GraphCanvas"
-import { useGraph } from "@/hooks/useGraph"
-import { useState } from "react"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+"use client";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  Network,
+  Play,
+  Pause,
+  RotateCcw,
+  Plus,
+  Trash,
+  HelpCircle,
+  Eraser,
+  ArrowRight,
+} from "lucide-react";
+import { GraphControls } from "@/components/graph/GraphControls";
+import { GraphSettings } from "@/components/graph/GraphSettings";
+import { GraphCanvas } from "@/components/graph/GraphCanvas";
+import { useGraph } from "@/hooks/useGraph";
+import { useState } from "react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {
   Dialog,
   DialogContent,
@@ -15,14 +36,14 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 
 interface GraphVisualizerProps {
-  soundEnabled: boolean
+  soundEnabled: boolean;
 }
 
 export function GraphVisualizer({ soundEnabled }: GraphVisualizerProps) {
-  const [showInstructions, setShowInstructions] = useState(false)
+  const [showInstructions, setShowInstructions] = useState(false);
 
   const {
     graph,
@@ -61,134 +82,141 @@ export function GraphVisualizer({ soundEnabled }: GraphVisualizerProps) {
     nodeCounter,
     edgeCounter,
     setCurrentStep,
-  } = useGraph(soundEnabled)
+  } = useGraph(soundEnabled);
 
   // Helper functions for detailed results
   const calculateMSTWeight = () => {
-    let totalWeight = 0
+    let totalWeight = 0;
     for (const edgeId of resultEdges) {
-      const edge = graph.edges.find((e) => e.id === edgeId)
+      const edge = graph.edges.find((e) => e.id === edgeId);
       if (edge) {
-        totalWeight += edge.weight
+        totalWeight += edge.weight;
       }
     }
-    return totalWeight
-  }
+    return totalWeight;
+  };
 
   const countNodesInMST = () => {
-    if (resultEdges.length === 0) return 0
+    if (resultEdges.length === 0) return 0;
 
-    const nodesInMST = new Set()
+    const nodesInMST = new Set();
 
     for (const edgeId of resultEdges) {
-      const edge = graph.edges.find((e) => e.id === edgeId)
+      const edge = graph.edges.find((e) => e.id === edgeId);
       if (edge) {
-        nodesInMST.add(edge.source)
-        nodesInMST.add(edge.target)
+        nodesInMST.add(edge.source);
+        nodesInMST.add(edge.target);
       }
     }
 
-    return nodesInMST.size
-  }
+    return nodesInMST.size;
+  };
 
   const countSCCComponents = () => {
-    if (resultNodes.length === 0) return 0
+    if (resultNodes.length === 0) return 0;
 
     // Count components by tracking changes in the resultNodes order
-    let componentCount = 1
-    let lastNodeId = resultNodes[0]
+    let componentCount = 1;
+    let lastNodeId = resultNodes[0];
 
     for (let i = 1; i < resultNodes.length; i++) {
       // In the SCC algorithm, nodes from different components are grouped together
       // We need to detect when we move to a new component
-      const nodeIndex = graph.nodes.findIndex((n) => n.id === resultNodes[i])
-      const lastNodeIndex = graph.nodes.findIndex((n) => n.id === lastNodeId)
+      const nodeIndex = graph.nodes.findIndex((n) => n.id === resultNodes[i]);
+      const lastNodeIndex = graph.nodes.findIndex((n) => n.id === lastNodeId);
 
       // If we jump to a node that's not connected to the previous one, it's a new component
-      if (Math.abs(nodeIndex - lastNodeIndex) > 1 && !areNodesConnected(lastNodeId, resultNodes[i])) {
-        componentCount++
+      if (
+        Math.abs(nodeIndex - lastNodeIndex) > 1 &&
+        !areNodesConnected(lastNodeId, resultNodes[i])
+      ) {
+        componentCount++;
       }
 
-      lastNodeId = resultNodes[i]
+      lastNodeId = resultNodes[i];
     }
 
-    return componentCount
-  }
+    return componentCount;
+  };
 
   const areNodesConnected = (nodeId1: string, nodeId2: string) => {
     return graph.edges.some(
       (e) =>
-        (e.source === nodeId1 && e.target === nodeId2) || (!isDirected && e.source === nodeId2 && e.target === nodeId1),
-    )
-  }
+        (e.source === nodeId1 && e.target === nodeId2) ||
+        (!isDirected && e.source === nodeId2 && e.target === nodeId1)
+    );
+  };
 
   const largestSCCSize = () => {
-    if (resultNodes.length === 0) return 0
+    if (resultNodes.length === 0) return 0;
 
     // Track component sizes
-    const componentSizes = []
-    let currentSize = 1
-    let lastNodeId = resultNodes[0]
+    const componentSizes = [];
+    let currentSize = 1;
+    let lastNodeId = resultNodes[0];
 
     for (let i = 1; i < resultNodes.length; i++) {
-      const nodeIndex = graph.nodes.findIndex((n) => n.id === resultNodes[i])
-      const lastNodeIndex = graph.nodes.findIndex((n) => n.id === lastNodeId)
+      const nodeIndex = graph.nodes.findIndex((n) => n.id === resultNodes[i]);
+      const lastNodeIndex = graph.nodes.findIndex((n) => n.id === lastNodeId);
 
-      if (Math.abs(nodeIndex - lastNodeIndex) > 1 && !areNodesConnected(lastNodeId, resultNodes[i])) {
-        componentSizes.push(currentSize)
-        currentSize = 1
+      if (
+        Math.abs(nodeIndex - lastNodeIndex) > 1 &&
+        !areNodesConnected(lastNodeId, resultNodes[i])
+      ) {
+        componentSizes.push(currentSize);
+        currentSize = 1;
       } else {
-        currentSize++
+        currentSize++;
       }
 
-      lastNodeId = resultNodes[i]
+      lastNodeId = resultNodes[i];
     }
 
-    componentSizes.push(currentSize)
-    return Math.max(...componentSizes, 0)
-  }
+    componentSizes.push(currentSize);
+    return Math.max(...componentSizes, 0);
+  };
 
   // Function to generate a highly complex graph
   const generateComplexGraph = () => {
-    if (isRunning) return
-    resetGraph()
+    if (isRunning) return;
+    resetGraph();
 
     // Create a more structured complex graph with different patterns
-    const nodeCount = 20 // Slightly fewer nodes for better visibility
-    const nodes = []
+    const nodeCount = 20; // Slightly fewer nodes for better visibility
+    const nodes = [];
 
     // Create nodes in a more organized layout
     // Main circle of nodes
-    const centerX = 250
-    const centerY = 250
-    const mainRadius = 150
+    const centerX = 250;
+    const centerY = 250;
+    const mainRadius = 150;
 
     for (let i = 0; i < 12; i++) {
-      const angle = (i / 12) * 2 * Math.PI
-      const x = centerX + mainRadius * Math.cos(angle)
-      const y = centerY + mainRadius * Math.sin(angle)
+      const angle = (i / 12) * 2 * Math.PI;
+      const x = centerX + mainRadius * Math.cos(angle);
+      const y = centerY + mainRadius * Math.sin(angle);
 
       nodes.push({
         id: `node-${i + 1}`,
         x,
         y,
         label: (i + 1).toString(),
-      })
+      });
     }
 
     // Inner circle of nodes
-    const innerRadius = 80
+    const innerRadius = 80;
     for (let i = 0; i < 6; i++) {
-      const angle = (i / 6) * 2 * Math.PI + Math.PI / 6
-      const x = centerX + innerRadius * Math.cos(angle)
-      const y = centerY + innerRadius * Math.sin(angle)
+      const angle = (i / 6) * 2 * Math.PI + Math.PI / 6;
+      const x = centerX + innerRadius * Math.cos(angle);
+      const y = centerY + innerRadius * Math.sin(angle);
 
       nodes.push({
         id: `node-${i + 13}`,
         x,
         y,
         label: (i + 13).toString(),
-      })
+      });
     }
 
     // Add a couple of outlier nodes
@@ -197,49 +225,49 @@ export function GraphVisualizer({ soundEnabled }: GraphVisualizerProps) {
       x: centerX - 200,
       y: centerY - 100,
       label: "19",
-    })
+    });
 
     nodes.push({
       id: `node-20`,
       x: centerX + 200,
       y: centerY + 100,
       label: "20",
-    })
+    });
 
     // Create a complex edge network with different patterns
-    const edges = []
+    const edges = [];
 
     // Connect outer circle in sequence (ring)
     for (let i = 0; i < 12; i++) {
-      const weight = isWeighted ? Math.floor(Math.random() * 5) + 1 : 1
+      const weight = isWeighted ? Math.floor(Math.random() * 5) + 1 : 1;
       edges.push({
         id: `edge-${edges.length + 1}`,
         source: nodes[i].id,
         target: nodes[(i + 1) % 12].id,
         weight,
-      })
+      });
     }
 
     // Connect inner circle in sequence
     for (let i = 12; i < 18; i++) {
-      const weight = isWeighted ? Math.floor(Math.random() * 5) + 1 : 1
+      const weight = isWeighted ? Math.floor(Math.random() * 5) + 1 : 1;
       edges.push({
         id: `edge-${edges.length + 1}`,
         source: nodes[i].id,
         target: nodes[i === 17 ? 12 : i + 1].id,
         weight,
-      })
+      });
     }
 
     // Connect outer to inner (spokes)
     for (let i = 0; i < 6; i++) {
-      const weight = isWeighted ? Math.floor(Math.random() * 5) + 1 : 1
+      const weight = isWeighted ? Math.floor(Math.random() * 5) + 1 : 1;
       edges.push({
         id: `edge-${edges.length + 1}`,
         source: nodes[i * 2].id,
         target: nodes[i + 12].id,
         weight,
-      })
+      });
     }
 
     // Connect outliers
@@ -248,14 +276,14 @@ export function GraphVisualizer({ soundEnabled }: GraphVisualizerProps) {
       source: nodes[0].id,
       target: nodes[18].id,
       weight: isWeighted ? Math.floor(Math.random() * 5) + 1 : 1,
-    })
+    });
 
     edges.push({
       id: `edge-${edges.length + 1}`,
       source: nodes[6].id,
       target: nodes[19].id,
       weight: isWeighted ? Math.floor(Math.random() * 5) + 1 : 1,
-    })
+    });
 
     // Add some cross-connections for complexity
     const crossConnections = [
@@ -268,7 +296,7 @@ export function GraphVisualizer({ soundEnabled }: GraphVisualizerProps) {
       [13, 16],
       [14, 17],
       [18, 19],
-    ]
+    ];
 
     for (const [from, to] of crossConnections) {
       edges.push({
@@ -276,16 +304,215 @@ export function GraphVisualizer({ soundEnabled }: GraphVisualizerProps) {
         source: nodes[from].id,
         target: nodes[to].id,
         weight: isWeighted ? Math.floor(Math.random() * 5) + 1 : 1,
-      })
+      });
     }
 
-    setGraph({ nodes, edges })
-    nodeCounter.current = nodeCount + 1
-    edgeCounter.current = edges.length + 1
+    setGraph({ nodes, edges });
+    nodeCounter.current = nodeCount + 1;
+    edgeCounter.current = edges.length + 1;
     setCurrentStep(
-      "Complex graph generated with wheel structure, inner and outer rings, and strategic cross-connections. Perfect for testing different graph algorithms.",
-    )
-  }
+      "Complex graph generated with wheel structure, inner and outer rings, and strategic cross-connections. Perfect for testing different graph algorithms."
+    );
+  };
+
+  const generateRandomComplexGraph = () => {
+    if (isRunning) return;
+    resetGraph();
+
+    // Create a truly random complex graph with different patterns each time
+    const nodeCount = Math.floor(Math.random() * 10) + 15; // 15-25 nodes
+    const nodes = [];
+
+    // Create nodes with random positions
+    for (let i = 0; i < nodeCount; i++) {
+      const x = Math.random() * 450 + 25; // 25-475
+      const y = Math.random() * 450 + 25; // 25-475
+
+      nodes.push({
+        id: `node-${i + 1}`,
+        x,
+        y,
+        label: (i + 1).toString(),
+      });
+    }
+
+    // Create a variety of edge patterns
+    const edges = [];
+    const patterns = ["circular", "star", "mesh", "tree", "clusters"];
+
+    // Choose 2-3 random patterns to combine
+    const selectedPatterns = [];
+    const patternCount = Math.floor(Math.random() * 2) + 2; // 2-3 patterns
+
+    for (let i = 0; i < patternCount; i++) {
+      const randomPattern =
+        patterns[Math.floor(Math.random() * patterns.length)];
+      if (!selectedPatterns.includes(randomPattern)) {
+        selectedPatterns.push(randomPattern);
+      }
+    }
+
+    // Apply selected patterns
+    if (selectedPatterns.includes("circular")) {
+      // Create circular connections
+      for (let i = 0; i < nodeCount; i++) {
+        const weight = isWeighted ? Math.floor(Math.random() * 9) + 1 : 1;
+        edges.push({
+          id: `edge-${edges.length + 1}`,
+          source: nodes[i].id,
+          target: nodes[(i + 1) % nodeCount].id,
+          weight,
+        });
+      }
+    }
+
+    if (selectedPatterns.includes("star")) {
+      // Create star pattern with random center
+      const centerIdx = Math.floor(Math.random() * nodeCount);
+      for (let i = 0; i < nodeCount; i++) {
+        if (i !== centerIdx && Math.random() < 0.7) {
+          const weight = isWeighted ? Math.floor(Math.random() * 9) + 1 : 1;
+          edges.push({
+            id: `edge-${edges.length + 1}`,
+            source: nodes[centerIdx].id,
+            target: nodes[i].id,
+            weight,
+          });
+        }
+      }
+    }
+
+    if (selectedPatterns.includes("mesh")) {
+      // Create random mesh connections
+      for (let i = 0; i < nodeCount; i++) {
+        for (let j = i + 1; j < nodeCount; j++) {
+          if (Math.random() < 0.15) {
+            // 15% chance of connection
+            const weight = isWeighted ? Math.floor(Math.random() * 9) + 1 : 1;
+            edges.push({
+              id: `edge-${edges.length + 1}`,
+              source: nodes[i].id,
+              target: nodes[j].id,
+              weight,
+            });
+          }
+        }
+      }
+    }
+
+    if (selectedPatterns.includes("tree")) {
+      // Create a tree-like structure
+      for (let i = 1; i < nodeCount; i++) {
+        const parentIdx = Math.floor(Math.random() * i);
+        const weight = isWeighted ? Math.floor(Math.random() * 9) + 1 : 1;
+        edges.push({
+          id: `edge-${edges.length + 1}`,
+          source: nodes[parentIdx].id,
+          target: nodes[i].id,
+          weight,
+        });
+      }
+    }
+
+    if (selectedPatterns.includes("clusters")) {
+      // Create 2-3 clusters
+      const clusterCount = Math.floor(Math.random() * 2) + 2;
+      const nodesPerCluster = Math.floor(nodeCount / clusterCount);
+
+      for (let c = 0; c < clusterCount; c++) {
+        const startIdx = c * nodesPerCluster;
+        const endIdx = Math.min((c + 1) * nodesPerCluster, nodeCount);
+
+        // Connect nodes within cluster
+        for (let i = startIdx; i < endIdx; i++) {
+          for (let j = i + 1; j < endIdx; j++) {
+            if (Math.random() < 0.4) {
+              // 40% chance of connection within cluster
+              const weight = isWeighted ? Math.floor(Math.random() * 9) + 1 : 1;
+              edges.push({
+                id: `edge-${edges.length + 1}`,
+                source: nodes[i].id,
+                target: nodes[j].id,
+                weight,
+              });
+            }
+          }
+        }
+
+        // Connect clusters with a few bridges
+        if (c < clusterCount - 1) {
+          const bridgeCount = Math.floor(Math.random() * 2) + 1; // 1-2 bridges
+          for (let b = 0; b < bridgeCount; b++) {
+            const sourceIdx =
+              Math.floor(Math.random() * nodesPerCluster) + startIdx;
+            const targetIdx =
+              Math.floor(Math.random() * nodesPerCluster) + endIdx;
+
+            if (targetIdx < nodeCount) {
+              const weight = isWeighted ? Math.floor(Math.random() * 9) + 1 : 1;
+              edges.push({
+                id: `edge-${edges.length + 1}`,
+                source: nodes[sourceIdx].id,
+                target: nodes[targetIdx].id,
+                weight,
+              });
+            }
+          }
+        }
+      }
+    }
+
+    // Ensure the graph is connected by adding edges if needed
+    const visited = new Set();
+    const dfs = (nodeId) => {
+      visited.add(nodeId);
+      const neighbors = edges
+        .filter((e) => e.source === nodeId || e.target === nodeId)
+        .map((e) => (e.source === nodeId ? e.target : e.source));
+
+      for (const neighbor of neighbors) {
+        if (!visited.has(neighbor)) {
+          dfs(neighbor);
+        }
+      }
+    };
+
+    if (nodes.length > 0) {
+      dfs(nodes[0].id);
+
+      // If not all nodes are visited, add edges to connect them
+      if (visited.size < nodes.length) {
+        for (let i = 0; i < nodes.length; i++) {
+          if (!visited.has(nodes[i].id)) {
+            // Connect to a random visited node
+            const visitedArray = Array.from(visited);
+            const randomVisitedId =
+              visitedArray[Math.floor(Math.random() * visitedArray.length)];
+            const weight = isWeighted ? Math.floor(Math.random() * 9) + 1 : 1;
+
+            edges.push({
+              id: `edge-${edges.length + 1}`,
+              source: randomVisitedId,
+              target: nodes[i].id,
+              weight,
+            });
+
+            // Update visited set
+            dfs(nodes[i].id);
+          }
+        }
+      }
+    }
+
+    setGraph({ nodes, edges });
+    nodeCounter.current = nodeCount + 1;
+    edgeCounter.current = edges.length + 1;
+    setCurrentStep(
+      `Generated a random complex graph with ${nodeCount} nodes and ${
+        edges.length
+      } edges using ${selectedPatterns.join(", ")} patterns.`
+    );
+  };
 
   return (
     <>
@@ -298,13 +525,18 @@ export function GraphVisualizer({ soundEnabled }: GraphVisualizerProps) {
             </span>
           </CardTitle>
           <CardDescription className="dark:text-[#F5E8D8]/70 text-gray-500 text-sm sm:text-base transition-colors">
-            Visualize how different graph algorithms traverse and analyze graph structures
+            Visualize how different graph algorithms traverse and analyze graph
+            structures
           </CardDescription>
         </CardHeader>
         <CardContent className="pt-4 sm:pt-6 p-4 sm:p-6">
           <div className="grid gap-6 sm:gap-8 lg:grid-cols-2">
             <div className="space-y-6">
-              <GraphControls algorithm={algorithm} setAlgorithm={setAlgorithm} isRunning={isRunning} />
+              <GraphControls
+                algorithm={algorithm}
+                setAlgorithm={setAlgorithm}
+                isRunning={isRunning}
+              />
 
               <GraphSettings
                 speed={speed}
@@ -327,14 +559,14 @@ export function GraphVisualizer({ soundEnabled }: GraphVisualizerProps) {
                   Random Graph
                 </Button>
                 <Button
-                  onClick={generateComplexGraph}
+                  onClick={generateRandomComplexGraph}
                   disabled={isRunning}
                   variant="outline"
                   size="sm"
                   className="text-xs sm:text-sm rounded-lg sm:rounded-xl dark:border-[#FF6F61] dark:text-[#F5E8D8] dark:hover:bg-[#FF6F61]/20 border-blue-400 text-blue-500 hover:bg-blue-100 transition-colors"
                 >
                   <Network className="mr-1 h-3 w-3 sm:h-4 sm:w-4" />
-                  Complex Graph
+                  Random Complex Graph
                 </Button>
                 <Button
                   onClick={clearGraph}
@@ -379,7 +611,8 @@ export function GraphVisualizer({ soundEnabled }: GraphVisualizerProps) {
                     Graph Type
                   </div>
                   <div className="text-lg sm:text-2xl font-bold dark:text-[#FF6F61] text-blue-600 transition-colors">
-                    {isDirected ? "Directed" : "Undirected"} {isWeighted ? "Weighted" : "Unweighted"}
+                    {isDirected ? "Directed" : "Undirected"}{" "}
+                    {isWeighted ? "Weighted" : "Unweighted"}
                   </div>
                 </div>
               </div>
@@ -391,37 +624,61 @@ export function GraphVisualizer({ soundEnabled }: GraphVisualizerProps) {
                       <p className="font-medium mb-2">
                         {algorithm === "bfs" && "BFS traversal complete!"}
                         {algorithm === "dfs" && "DFS traversal complete!"}
-                        {algorithm === "topological" && "Topological sort complete!"}
-                        {algorithm === "kruskal" && "Kruskal's MST algorithm complete!"}
-                        {algorithm === "prim" && "Prim's MST algorithm complete!"}
-                        {algorithm === "scc" && "Strongly Connected Components found!"}
+                        {algorithm === "topological" &&
+                          "Topological sort complete!"}
+                        {algorithm === "kruskal" &&
+                          "Kruskal's MST algorithm complete!"}
+                        {algorithm === "prim" &&
+                          "Prim's MST algorithm complete!"}
+                        {algorithm === "scc" &&
+                          "Strongly Connected Components found!"}
                       </p>
 
                       {(algorithm === "bfs" || algorithm === "dfs") && (
                         <div className="grid grid-cols-2 gap-x-4 gap-y-1">
                           <div>
-                            <span className="font-semibold">Visited:</span> {visitedNodes.length} nodes
+                            <span className="font-semibold">Visited:</span>{" "}
+                            {visitedNodes.length} nodes
                           </div>
                           <div>
                             <span className="font-semibold">Coverage:</span>{" "}
-                            {graph.nodes.length > 0 ? Math.round((visitedNodes.length / graph.nodes.length) * 100) : 0}%
-                            of graph
+                            {graph.nodes.length > 0
+                              ? Math.round(
+                                  (visitedNodes.length / graph.nodes.length) *
+                                    100
+                                )
+                              : 0}
+                            % of graph
                           </div>
                           <div>
-                            <span className="font-semibold">Starting node:</span>{" "}
-                            {graph.nodes.length > 0 ? graph.nodes[0].label : "None"}
+                            <span className="font-semibold">
+                              Starting node:
+                            </span>{" "}
+                            {graph.nodes.length > 0
+                              ? graph.nodes[0].label
+                              : "None"}
                           </div>
-                          <div className="col-span-2">
-                            <span className="font-semibold">Traversal order:</span>{" "}
-                            <div className="max-h-20 overflow-y-auto mt-1 p-1 bg-gray-800 rounded text-xs">
-                              {visitedNodes.map((id) => graph.nodes.find((n) => n.id === id)?.label || id).join(" → ")}
+                          <div className="col-span-2 mt-1">
+                            <span className="font-semibold">
+                              Traversal order:
+                            </span>{" "}
+                            <div className="max-h-20 overflow-y-auto mt-1 p-1 bg-gray-800 dark:bg-gray-800 text-white rounded text-xs">
+                              {visitedNodes
+                                .map(
+                                  (id) =>
+                                    graph.nodes.find((n) => n.id === id)
+                                      ?.label || id
+                                )
+                                .join(" → ")}
                             </div>
                           </div>
                           <div className="col-span-2 mt-2">
                             <span className="font-semibold">Analysis:</span>{" "}
                             {visitedNodes.length === graph.nodes.length
                               ? "Complete graph traversal achieved. All nodes are reachable from the start node."
-                              : `${graph.nodes.length - visitedNodes.length} nodes were not reachable from the start node. The graph may have disconnected components.`}
+                              : `${
+                                  graph.nodes.length - visitedNodes.length
+                                } nodes were not reachable from the start node. The graph may have disconnected components.`}
                           </div>
                           <div className="col-span-2 mt-2">
                             <span className="font-semibold">Performance:</span>{" "}
@@ -433,16 +690,27 @@ export function GraphVisualizer({ soundEnabled }: GraphVisualizerProps) {
                       {algorithm === "topological" && (
                         <div className="grid grid-cols-2 gap-x-4 gap-y-1">
                           <div>
-                            <span className="font-semibold">Ordered:</span> {resultNodes.length} nodes
+                            <span className="font-semibold">Ordered:</span>{" "}
+                            {resultNodes.length} nodes
                           </div>
                           <div>
                             <span className="font-semibold">Valid DAG:</span>{" "}
-                            {resultNodes.length === graph.nodes.length ? "Yes" : "No"}
+                            {resultNodes.length === graph.nodes.length
+                              ? "Yes"
+                              : "No"}
                           </div>
                           <div className="col-span-2">
-                            <span className="font-semibold">Topological order:</span>{" "}
+                            <span className="font-semibold">
+                              Topological order:
+                            </span>{" "}
                             <div className="max-h-20 overflow-y-auto mt-1 p-1 bg-gray-800 rounded text-xs">
-                              {resultNodes.map((id) => graph.nodes.find((n) => n.id === id)?.label || id).join(" → ")}
+                              {resultNodes
+                                .map(
+                                  (id) =>
+                                    graph.nodes.find((n) => n.id === id)
+                                      ?.label || id
+                                )
+                                .join(" → ")}
                             </div>
                           </div>
                           <div className="col-span-2 mt-2">
@@ -463,29 +731,47 @@ export function GraphVisualizer({ soundEnabled }: GraphVisualizerProps) {
                       {(algorithm === "kruskal" || algorithm === "prim") && (
                         <div className="grid grid-cols-2 gap-x-4 gap-y-1">
                           <div>
-                            <span className="font-semibold">MST Edges:</span> {resultEdges.length} edges
+                            <span className="font-semibold">MST Edges:</span>{" "}
+                            {resultEdges.length} edges
                           </div>
                           <div>
-                            <span className="font-semibold">Total Weight:</span> {calculateMSTWeight()}
+                            <span className="font-semibold">Total Weight:</span>{" "}
+                            {calculateMSTWeight()}
                           </div>
                           <div>
-                            <span className="font-semibold">Nodes Connected:</span> {countNodesInMST()} of{" "}
-                            {graph.nodes.length}
+                            <span className="font-semibold">
+                              Nodes Connected:
+                            </span>{" "}
+                            {countNodesInMST()} of {graph.nodes.length}
                           </div>
                           <div>
-                            <span className="font-semibold">Avg. Edge Weight:</span>{" "}
-                            {resultEdges.length > 0 ? (calculateMSTWeight() / resultEdges.length).toFixed(2) : 0}
+                            <span className="font-semibold">
+                              Avg. Edge Weight:
+                            </span>{" "}
+                            {resultEdges.length > 0
+                              ? (
+                                  calculateMSTWeight() / resultEdges.length
+                                ).toFixed(2)
+                              : 0}
                           </div>
                           <div className="col-span-2 mt-1">
                             <span className="font-semibold">MST Edges:</span>{" "}
-                            <div className="max-h-20 overflow-y-auto mt-1 p-1 bg-gray-800 rounded text-xs">
+                            <div className="max-h-20 overflow-y-auto mt-1 p-1 bg-gray-800 dark:bg-gray-800 text-white rounded text-xs">
                               {resultEdges
                                 .map((edgeId) => {
-                                  const edge = graph.edges.find((e) => e.id === edgeId)
-                                  if (!edge) return null
-                                  const source = graph.nodes.find((n) => n.id === edge.source)?.label || edge.source
-                                  const target = graph.nodes.find((n) => n.id === edge.target)?.label || edge.target
-                                  return `${source} → ${target} (${edge.weight})`
+                                  const edge = graph.edges.find(
+                                    (e) => e.id === edgeId
+                                  );
+                                  if (!edge) return null;
+                                  const source =
+                                    graph.nodes.find(
+                                      (n) => n.id === edge.source
+                                    )?.label || edge.source;
+                                  const target =
+                                    graph.nodes.find(
+                                      (n) => n.id === edge.target
+                                    )?.label || edge.target;
+                                  return `${source} → ${target} (${edge.weight})`;
                                 })
                                 .join(", ")}
                             </div>
@@ -497,7 +783,9 @@ export function GraphVisualizer({ soundEnabled }: GraphVisualizerProps) {
                               : `Graph is not connected. Found ${countNodesInMST()} nodes in the largest component with total weight ${calculateMSTWeight()}.`}
                           </div>
                           <div className="col-span-2 mt-2">
-                            <span className="font-semibold">Algorithm Efficiency:</span>{" "}
+                            <span className="font-semibold">
+                              Algorithm Efficiency:
+                            </span>{" "}
                             {algorithm === "kruskal"
                               ? `Kruskal's algorithm runs in O(E log E) time where E=${graph.edges.length}.`
                               : `Prim's algorithm runs in O(E log V) time where V=${graph.nodes.length} and E=${graph.edges.length}.`}
@@ -508,62 +796,83 @@ export function GraphVisualizer({ soundEnabled }: GraphVisualizerProps) {
                       {algorithm === "scc" && (
                         <div className="grid grid-cols-2 gap-x-4 gap-y-1">
                           <div>
-                            <span className="font-semibold">Components:</span> {countSCCComponents()} found
+                            <span className="font-semibold">Components:</span>{" "}
+                            {countSCCComponents()} found
                           </div>
                           <div>
-                            <span className="font-semibold">Largest:</span> {largestSCCSize()} nodes
+                            <span className="font-semibold">Largest:</span>{" "}
+                            {largestSCCSize()} nodes
                           </div>
                           <div>
-                            <span className="font-semibold">Nodes in SCCs:</span> {resultNodes.length} of{" "}
-                            {graph.nodes.length}
+                            <span className="font-semibold">
+                              Nodes in SCCs:
+                            </span>{" "}
+                            {resultNodes.length} of {graph.nodes.length}
                           </div>
                           <div>
                             <span className="font-semibold">Connectivity:</span>{" "}
-                            {countSCCComponents() === 1 ? "Strongly connected" : "Not strongly connected"}
+                            {countSCCComponents() === 1
+                              ? "Strongly connected"
+                              : "Not strongly connected"}
                           </div>
-                          <div className="col-span-2 mt-1">
+                          <div className="col-span-2">
                             <span className="font-semibold">Components:</span>{" "}
-                            <div className="max-h-20 overflow-y-auto mt-1 p-1 bg-gray-800 rounded text-xs">
+                            <div className="max-h-20 overflow-y-auto mt-1 p-1 bg-gray-800 dark:bg-gray-800 text-white rounded text-xs">
                               {(() => {
                                 // Group nodes by component
-                                const components = []
-                                let currentComponent = []
-                                let lastNodeId = resultNodes.length > 0 ? resultNodes[0] : null
+                                const components = [];
+                                let currentComponent = [];
+                                let lastNodeId =
+                                  resultNodes.length > 0
+                                    ? resultNodes[0]
+                                    : null;
 
                                 for (let i = 0; i < resultNodes.length; i++) {
-                                  const nodeId = resultNodes[i]
-                                  const nodeLabel = graph.nodes.find((n) => n.id === nodeId)?.label || nodeId
+                                  const nodeId = resultNodes[i];
+                                  const nodeLabel =
+                                    graph.nodes.find((n) => n.id === nodeId)
+                                      ?.label || nodeId;
 
                                   if (i > 0) {
-                                    const nodeIndex = graph.nodes.findIndex((n) => n.id === nodeId)
-                                    const lastNodeIndex = graph.nodes.findIndex((n) => n.id === lastNodeId)
+                                    const nodeIndex = graph.nodes.findIndex(
+                                      (n) => n.id === nodeId
+                                    );
+                                    const lastNodeIndex = graph.nodes.findIndex(
+                                      (n) => n.id === lastNodeId
+                                    );
 
                                     if (
                                       Math.abs(nodeIndex - lastNodeIndex) > 1 &&
                                       !areNodesConnected(lastNodeId, nodeId)
                                     ) {
-                                      components.push([...currentComponent])
-                                      currentComponent = []
+                                      components.push([...currentComponent]);
+                                      currentComponent = [];
                                     }
                                   }
 
-                                  currentComponent.push(nodeLabel)
-                                  lastNodeId = nodeId
+                                  currentComponent.push(nodeLabel);
+                                  lastNodeId = nodeId;
                                 }
 
                                 if (currentComponent.length > 0) {
-                                  components.push(currentComponent)
+                                  components.push(currentComponent);
                                 }
 
                                 return components
-                                  .map((comp, idx) => `Component ${idx + 1}: {${comp.join(", ")}}`)
-                                  .join("\n")
+                                  .map(
+                                    (comp, idx) =>
+                                      `Component ${idx + 1}: {${comp.join(
+                                        ", "
+                                      )}}`
+                                  )
+                                  .join("\n");
                               })()}
                             </div>
                           </div>
                           <div className="col-span-2 mt-2">
                             <span className="font-semibold">Analysis:</span>{" "}
-                            {countSCCComponents() === 1 && resultNodes.length === graph.nodes.length
+                            {countSCCComponents() === 1 &&
+                            resultNodes.length === graph.nodes.length
                               ? "Graph is strongly connected (every node can reach every other node)."
                               : `Graph has ${countSCCComponents()} separate strongly connected regions. In a directed graph, this indicates distinct areas where nodes can reach each other.`}
                           </div>
@@ -577,7 +886,8 @@ export function GraphVisualizer({ soundEnabled }: GraphVisualizerProps) {
                       )}
                     </div>
                   ) : (
-                    currentStep || "Click on the canvas to add nodes. Select nodes to create edges between them."
+                    currentStep ||
+                    "Click on the canvas to add nodes. Select nodes to create edges between them."
                   )}
                 </div>
               </div>
@@ -614,19 +924,27 @@ export function GraphVisualizer({ soundEnabled }: GraphVisualizerProps) {
               <div className="flex flex-wrap gap-2 text-xs sm:text-sm">
                 <div className="flex items-center gap-1">
                   <div className="w-4 h-4 bg-blue-500 rounded-full"></div>
-                  <span className="dark:text-[#F5E8D8] text-gray-700">Regular Node</span>
+                  <span className="dark:text-[#F5E8D8] text-gray-700">
+                    Regular Node
+                  </span>
                 </div>
                 <div className="flex items-center gap-1">
                   <div className="w-4 h-4 bg-green-500 rounded-full"></div>
-                  <span className="dark:text-[#F5E8D8] text-gray-700">Visited Node</span>
+                  <span className="dark:text-[#F5E8D8] text-gray-700">
+                    Visited Node
+                  </span>
                 </div>
                 <div className="flex items-center gap-1">
                   <div className="w-4 h-4 bg-yellow-500 rounded-full"></div>
-                  <span className="dark:text-[#F5E8D8] text-gray-700">Active Node</span>
+                  <span className="dark:text-[#F5E8D8] text-gray-700">
+                    Active Node
+                  </span>
                 </div>
                 <div className="flex items-center gap-1">
                   <div className="w-4 h-4 bg-red-500 rounded-full"></div>
-                  <span className="dark:text-[#F5E8D8] text-gray-700">Result Node</span>
+                  <span className="dark:text-[#F5E8D8] text-gray-700">
+                    Result Node
+                  </span>
                 </div>
               </div>
             </div>
@@ -666,7 +984,9 @@ export function GraphVisualizer({ soundEnabled }: GraphVisualizerProps) {
                 onClick={() => setMode("addNode")}
                 disabled={isRunning}
                 className={`dark:border-[#FF6F61] dark:text-[#F5E8D8] dark:hover:bg-[#FF6F61]/20 border-blue-400 text-blue-500 hover:bg-blue-100 rounded-lg sm:rounded-xl transition-colors text-xs sm:text-sm ${
-                  mode === "addNode" ? "bg-blue-100 dark:bg-[#FF6F61]/20 font-bold" : ""
+                  mode === "addNode"
+                    ? "bg-blue-100 dark:bg-[#FF6F61]/20 font-bold"
+                    : ""
                 }`}
               >
                 <Plus className="mr-1 h-3 w-3 sm:h-4 sm:w-4" />
@@ -678,7 +998,9 @@ export function GraphVisualizer({ soundEnabled }: GraphVisualizerProps) {
                 onClick={() => setMode("addEdge")}
                 disabled={isRunning}
                 className={`dark:border-[#FF6F61] dark:text-[#F5E8D8] dark:hover:bg-[#FF6F61]/20 border-blue-400 text-blue-500 hover:bg-blue-100 rounded-lg sm:rounded-xl transition-colors text-xs sm:text-sm ${
-                  mode === "addEdge" ? "bg-blue-100 dark:bg-[#FF6F61]/20 font-bold" : ""
+                  mode === "addEdge"
+                    ? "bg-blue-100 dark:bg-[#FF6F61]/20 font-bold"
+                    : ""
                 }`}
               >
                 <ArrowRight className="mr-1 h-3 w-3 sm:h-4 sm:w-4" />
@@ -690,7 +1012,9 @@ export function GraphVisualizer({ soundEnabled }: GraphVisualizerProps) {
                 onClick={() => setMode("delete")}
                 disabled={isRunning}
                 className={`dark:border-[#FF6F61] dark:text-[#F5E8D8] dark:hover:bg-[#FF6F61]/20 border-blue-400 text-blue-500 hover:bg-blue-100 rounded-lg sm:rounded-xl transition-colors text-xs sm:text-sm ${
-                  mode === "delete" ? "bg-blue-100 dark:bg-[#FF6F61]/20 font-bold" : ""
+                  mode === "delete"
+                    ? "bg-blue-100 dark:bg-[#FF6F61]/20 font-bold"
+                    : ""
                 }`}
               >
                 <Eraser className="mr-1 h-3 w-3 sm:h-4 sm:w-4" />
@@ -699,7 +1023,8 @@ export function GraphVisualizer({ soundEnabled }: GraphVisualizerProps) {
             </div>
           </CardTitle>
           <CardDescription className="dark:text-[#F5E8D8]/70 text-gray-500 text-sm sm:text-base transition-colors">
-            Click to add nodes. Select two nodes to create an edge. Use the buttons above to switch modes.
+            Click to add nodes. Select two nodes to create an edge. Use the
+            buttons above to switch modes.
           </CardDescription>
         </CardHeader>
         <CardContent className="pt-4 sm:pt-6 dark:bg-[#333333]/30 bg-gray-50/50 rounded-lg sm:rounded-xl my-2 sm:my-4 mx-2 p-2 sm:p-4 transition-colors">
@@ -727,13 +1052,19 @@ export function GraphVisualizer({ soundEnabled }: GraphVisualizerProps) {
       <Dialog open={showInstructions} onOpenChange={setShowInstructions}>
         <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-xl">Graph Visualization Instructions</DialogTitle>
-            <DialogDescription>Learn how to use the Graph Algorithm Visualizer effectively</DialogDescription>
+            <DialogTitle className="text-xl">
+              Graph Visualization Instructions
+            </DialogTitle>
+            <DialogDescription>
+              Learn how to use the Graph Algorithm Visualizer effectively
+            </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-4">
             <div>
-              <h3 className="font-semibold text-lg dark:text-[#FF6F61] text-blue-600 mb-2">Creating Nodes</h3>
+              <h3 className="font-semibold text-lg dark:text-[#FF6F61] text-blue-600 mb-2">
+                Creating Nodes
+              </h3>
               <p className="text-sm dark:text-[#F5E8D8] text-gray-700">
                 1. Select the "Add Node" mode from the buttons above the canvas.
                 <br />
@@ -744,24 +1075,33 @@ export function GraphVisualizer({ soundEnabled }: GraphVisualizerProps) {
             </div>
 
             <div>
-              <h3 className="font-semibold text-lg dark:text-[#FF6F61] text-blue-600 mb-2">Creating Edges</h3>
+              <h3 className="font-semibold text-lg dark:text-[#FF6F61] text-blue-600 mb-2">
+                Creating Edges
+              </h3>
               <p className="text-sm dark:text-[#F5E8D8] text-gray-700">
                 1. Select the "Add Edge" mode from the buttons above the canvas.
                 <br />
-                2. Click on a node to select it as the source node (it will turn yellow).
+                2. Click on a node to select it as the source node (it will turn
+                yellow).
                 <br />
-                3. A temporary line will follow your cursor until you click another node.
+                3. A temporary line will follow your cursor until you click
+                another node.
                 <br />
-                4. Click on a different node to create an edge between the two nodes.
+                4. Click on a different node to create an edge between the two
+                nodes.
                 <br />
-                5. If "Weighted Edges" is enabled, you'll be prompted to enter a weight for the edge.
+                5. If "Weighted Edges" is enabled, you'll be prompted to enter a
+                weight for the edge.
                 <br />
-                6. To cancel edge creation, click on the same node again or switch modes.
+                6. To cancel edge creation, click on the same node again or
+                switch modes.
               </p>
             </div>
 
             <div>
-              <h3 className="font-semibold text-lg dark:text-[#FF6F61] text-blue-600 mb-2">Deleting Elements</h3>
+              <h3 className="font-semibold text-lg dark:text-[#FF6F61] text-blue-600 mb-2">
+                Deleting Elements
+              </h3>
               <p className="text-sm dark:text-[#F5E8D8] text-gray-700">
                 1. Select the "Delete" mode from the buttons above the canvas.
                 <br />
@@ -774,43 +1114,56 @@ export function GraphVisualizer({ soundEnabled }: GraphVisualizerProps) {
             </div>
 
             <div>
-              <h3 className="font-semibold text-lg dark:text-[#FF6F61] text-blue-600 mb-2">Graph Types</h3>
+              <h3 className="font-semibold text-lg dark:text-[#FF6F61] text-blue-600 mb-2">
+                Graph Types
+              </h3>
               <p className="text-sm dark:text-[#F5E8D8] text-gray-700">
-                1. Toggle "Directed Graph" to switch between directed and undirected graphs.
+                1. Toggle "Directed Graph" to switch between directed and
+                undirected graphs.
                 <br />
-                2. In directed graphs, edges have arrows showing their direction.
+                2. In directed graphs, edges have arrows showing their
+                direction.
                 <br />
                 3. Toggle "Weighted Edges" to add numerical weights to edges.
                 <br />
-                4. Weights are displayed on the edges and used by algorithms like Dijkstra's.
+                4. Weights are displayed on the edges and used by algorithms
+                like Dijkstra's.
               </p>
             </div>
 
             <div>
-              <h3 className="font-semibold text-lg dark:text-[#FF6F61] text-blue-600 mb-2">Running Algorithms</h3>
+              <h3 className="font-semibold text-lg dark:text-[#FF6F61] text-blue-600 mb-2">
+                Running Algorithms
+              </h3>
               <p className="text-sm dark:text-[#F5E8D8] text-gray-700">
                 1. Select an algorithm from the dropdown menu.
                 <br />
                 2. Click the "Visualize" button to start the algorithm.
                 <br />
-                3. Watch as nodes and edges change color to show the algorithm's progress:
+                3. Watch as nodes and edges change color to show the algorithm's
+                progress:
                 <br />- Blue: Regular nodes
                 <br />- Green: Visited nodes
                 <br />- Yellow: Currently active nodes/edges
-                <br />- Red: Result nodes/edges (e.g., nodes in topological order, edges in MST)
+                <br />- Red: Result nodes/edges (e.g., nodes in topological
+                order, edges in MST)
                 <br />
                 4. Use the speed slider to control the animation speed.
               </p>
             </div>
 
             <div>
-              <h3 className="font-semibold text-lg dark:text-[#FF6F61] text-blue-600 mb-2">Tips</h3>
+              <h3 className="font-semibold text-lg dark:text-[#FF6F61] text-blue-600 mb-2">
+                Tips
+              </h3>
               <p className="text-sm dark:text-[#F5E8D8] text-gray-700">
                 • Use "Random Graph" to quickly generate a graph for testing.
-                <br />• "Reset" clears the visualization but keeps your graph structure.
-                <br />• "Clear Graph" removes all nodes and edges to start fresh.
-                <br />• Some algorithms only work on specific graph types (e.g., Topological Sort requires a directed
-                acyclic graph).
+                <br />• "Reset" clears the visualization but keeps your graph
+                structure.
+                <br />• "Clear Graph" removes all nodes and edges to start
+                fresh.
+                <br />• Some algorithms only work on specific graph types (e.g.,
+                Topological Sort requires a directed acyclic graph).
               </p>
             </div>
           </div>
@@ -821,5 +1174,5 @@ export function GraphVisualizer({ soundEnabled }: GraphVisualizerProps) {
         </DialogContent>
       </Dialog>
     </>
-  )
+  );
 }

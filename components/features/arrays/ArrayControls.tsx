@@ -1,20 +1,20 @@
-"use client"
+"use client";
 
-import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
-import { Shuffle, ArrowDownUp, Braces, Dices } from "lucide-react"
-import { CustomSlider } from "@/components/ui/custom-slider"
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Shuffle, ArrowDownUp, Braces, Dices } from "lucide-react";
+import { CustomSlider } from "@/components/ui/custom-slider";
 
 interface ArrayControlsProps {
-  arraySize: number
-  setArraySize: (size: number) => void
-  speed: number
-  setSpeed: (speed: number) => void
-  running: boolean
-  generateArray: () => void
-  generateNearlySortedArray: () => void
-  generateReversedArray: () => void
-  generateFewUniqueArray: () => void
+  arraySize: number;
+  setArraySize: (size: number) => void;
+  speed: number;
+  setSpeed: (speed: number) => void;
+  running: boolean;
+  generateArray: () => void;
+  generateNearlySortedArray: () => void;
+  generateReversedArray: () => void;
+  generateFewUniqueArray: () => void;
 }
 
 export function ArrayControls({
@@ -31,10 +31,10 @@ export function ArrayControls({
   // Format speed display
   const formatSpeed = (value: number) => {
     if (value < 1) {
-      return `${value.toFixed(1)}ms`
+      return `${value.toFixed(1)}ms`;
     }
-    return `${value}ms`
-  }
+    return `${value}ms`;
+  };
 
   return (
     <div className="space-y-3 sm:space-y-4">
@@ -71,7 +71,7 @@ export function ArrayControls({
           trackClassName="dark:bg-[#FF6F61]/50 bg-blue-500/50 dark:shadow-[0_0_8px_rgba(255,111,97,0.3)] shadow-[0_0_8px_rgba(59,130,246,0.3)] transition-colors"
         />
         <p className="text-xs sm:text-sm dark:text-[#F5E8D8]/70 text-gray-500 mt-1 transition-colors">
-          Lower value = faster animation
+          Lower value = faster animation (0.1ms = fastest)
         </p>
       </div>
 
@@ -118,5 +118,5 @@ export function ArrayControls({
         </Button>
       </div>
     </div>
-  )
+  );
 }
