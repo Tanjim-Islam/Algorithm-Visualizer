@@ -9,13 +9,7 @@ import type { Achievement } from "@/types";
 
 export function useAlgorithmVisualizer() {
   const [array, setArray] = useState<number[]>([]);
-  const [arraySize, setArraySize] = useState<number>(() => {
-    if (typeof window !== "undefined") {
-      const savedSize = localStorage.getItem("algorithmVisualizerSize");
-      return savedSize ? Number.parseInt(savedSize) : 50;
-    }
-    return 50;
-  });
+  const [arraySize, setArraySize] = useState<number>(20);
   const [algorithm, setAlgorithm] = useState<string>("bubbleSort");
   // Update the speed range to allow faster animations
   const [speed, setSpeed] = useState<number>(() => {

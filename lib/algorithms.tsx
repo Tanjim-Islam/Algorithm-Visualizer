@@ -69,6 +69,10 @@ export const algorithms = {
 
       for (let i = 0; i < n - 1; i++) {
         if (cancelRef.current) {
+          if (timerRef.current) {
+            clearInterval(timerRef.current);
+            timerRef.current = null;
+          }
           setRunning(false);
           return;
         }
@@ -81,6 +85,10 @@ export const algorithms = {
 
         for (let j = 0; j < n - i - 1; j++) {
           if (cancelRef.current) {
+            if (timerRef.current) {
+              clearInterval(timerRef.current);
+              timerRef.current = null;
+            }
             setRunning(false);
             return;
           }
@@ -136,6 +144,11 @@ export const algorithms = {
       setActiveIndices([]);
       setCurrentStep("Bubble Sort completed!");
       setProgress(100);
+
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
       setRunning(false);
     },
   },
