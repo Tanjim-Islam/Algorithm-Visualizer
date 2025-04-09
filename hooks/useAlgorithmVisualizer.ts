@@ -11,14 +11,7 @@ export function useAlgorithmVisualizer() {
   const [array, setArray] = useState<number[]>([]);
   const [arraySize, setArraySize] = useState<number>(20);
   const [algorithm, setAlgorithm] = useState<string>("bubbleSort");
-  // Update the speed range to allow faster animations
-  const [speed, setSpeed] = useState<number>(() => {
-    if (typeof window !== "undefined") {
-      const savedSpeed = localStorage.getItem("algorithmVisualizerSpeed");
-      return savedSpeed ? Number.parseFloat(savedSpeed) : 10;
-    }
-    return 10;
-  });
+  const [speed, setSpeed] = useState<number>(10);
   const [running, setRunning] = useState<boolean>(false);
   const [comparisons, setComparisons] = useState<number>(0);
   const [swaps, setSwaps] = useState<number>(0);
@@ -519,6 +512,15 @@ export function useAlgorithmVisualizer() {
         clearInterval(timerRef.current);
       }
     };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedSpeed = localStorage.getItem("algorithmVisualizerSpeed");
+      if (savedSpeed) {
+        setSpeed(Number.parseFloat(savedSpeed));
+      }
+    }
   }, []);
 
   useEffect(() => {
