@@ -191,16 +191,6 @@ export function BacktrackingControls({
           </div>
 
           <div className="flex justify-between mt-4 gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={resetVisualization}
-              disabled={running}
-              className="flex-1 dark:border-[#FF6F61] dark:text-[#FF6F61] dark:hover:bg-[#FF6F61]/10 border-blue-400 text-blue-500 hover:bg-blue-50 transition-colors"
-            >
-              <RotateCcw className="h-4 w-4 mr-2" />
-              Reset
-            </Button>
             {running ? (
               <Button
                 variant="outline"
@@ -222,6 +212,17 @@ export function BacktrackingControls({
                 Start
               </Button>
             )}
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={resetVisualization}
+              disabled={running}
+              className="flex-1 dark:border-[#FF6F61] dark:text-[#FF6F61] dark:hover:bg-[#FF6F61]/10 border-blue-400 text-blue-500 hover:bg-blue-50 transition-colors"
+            >
+              <RotateCcw className="h-4 w-4 mr-2" />
+              Reset
+            </Button>
           </div>
         </div>
       </Card>

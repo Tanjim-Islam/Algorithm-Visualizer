@@ -139,47 +139,6 @@ export function KnightsTourSettings({
           </Select>
         </div>
 
-        <div className="space-y-2">
-          <Label className="text-sm font-medium dark:text-[#F5E8D8] text-gray-700">
-            Starting Position (Coming Soon)
-          </Label>
-          <div className="flex items-center space-x-2">
-            <div className="flex items-center space-x-2">
-              <Label htmlFor="start-row" className="text-xs dark:text-[#F5E8D8]/70 text-gray-500">
-                Row:
-              </Label>
-              <Input
-                id="start-row"
-                type="number"
-                min={0}
-                max={knightsTourSize - 1}
-                value={startRow}
-                onChange={(e) => setStartRow(e.target.value)}
-                disabled={true} // Disabled for now
-                className="w-16 opacity-50"
-              />
-            </div>
-            <div className="flex items-center space-x-2">
-              <Label htmlFor="start-col" className="text-xs dark:text-[#F5E8D8]/70 text-gray-500">
-                Column:
-              </Label>
-              <Input
-                id="start-col"
-                type="number"
-                min={0}
-                max={knightsTourSize - 1}
-                value={startCol}
-                onChange={(e) => setStartCol(e.target.value)}
-                disabled={true} // Disabled for now
-                className="w-16 opacity-50"
-              />
-            </div>
-          </div>
-          <p className="text-xs dark:text-[#F5E8D8]/60 text-gray-500 italic">
-            Note: Custom starting positions will be available in a future update
-          </p>
-        </div>
-
         <Button
           variant="outline"
           size="sm"
